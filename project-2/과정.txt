@@ -1,0 +1,67 @@
+syscall 3개를 만들어야 한다.
+
+1) syscall.h에 #define. setnice : 23, getnice : 24, ps : 25
+
+2) defs.h에 집어넣어야 함.
+// proc.c라고 되어있는 곳 밑에 같은 형식으로.
+3) user.h 의 system call에 위의 함수 선언.
+
+4) sysproc.c
+int sys_setnice(void){
+	setnice(); // 아직 없음.
+	return 0;
+}
+부터 같은 형식으로 ps까지를 추가해주었다.
+
+5) usys.S에 
+SYSCALL(setnice)부터 같은 형식으로 ps까지 추가해주었다.
+
+6) syscall.c
+1 extern int sys_getnice(void)를 추가해줘야 한다.
+2 [SYS_setnice] sys_getnice 부터 ps까지 같은 형식으로 추가해주었다.
+
+7) 우선은 생략
+
+8) proc.c
+각각을 구현 우선은 생략
+int setnice(int pid, int nice_value) // 나는 nice로 하였다.
+int getnice(int pid)
+int ps(int pid)
+자세한 내용은 이후에
+
+9) .c파일을 만들어서 각각 구현
+
+10) 실행.
+
+
+ps 함수를 ->proc.c에 생성.
+allocproc 수정.
+?) foo.c 여기서 parent가 child 를 만든거같은데. 이걸 ps를 구현한 것이라고 보는듯
+chpr를 구현하였는데 이는 setnice와 동일한 기능을 하는 듯
+근데 sysproc.c에서
+sys_chpr(void)
+{
+	int pid, pr;
+	if(argint(0, &pid) < 0)
+		return -1;
+	if(argint(1, &pr) < 0)
+		return -1;
+	
+	return chpr(pid, pr);
+} 
+위의 코드는 무슨 뜻이지
+if 저기 무슨뜻인지 모르겠음.
+	return 
+}
+
+?) exec.c에 proc->nice = 3을 넣어줬음 이거 뭐냐
+
+vi test.c
+를 만들면
+vi Makefile에 UPROG밑에  이를 추가해줘야함 그래야 
+
+qemu-nox틀어서 ls했을때
+kill
+... 이렇게 뜬다
+
+
